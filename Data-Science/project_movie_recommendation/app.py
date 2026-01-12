@@ -1,6 +1,8 @@
 import pickle
 import streamlit as st
 import requests
+import os
+
 # ------------------------------------------------------
 # PAGE CONFIG
 # ------------------------------------------------------
