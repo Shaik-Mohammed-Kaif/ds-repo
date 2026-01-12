@@ -49,12 +49,21 @@ TMDB_LINK = "https://www.themoviedb.org/movie/"
 # LOAD PICKLE FILES (ONLY TWO)
 # ------------------------------------------------------
 @st.cache_data
-def load_models():
-    movies = pickle.load(open("movie_list.pkl", "rb"))
-    similarity = pickle.load(open("similarity.pkl", "rb"))
+def load_data():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # go 2 levels up -> ds-repo/
+    root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
+
+    movies_path = os.path.join(root_dir, "movie_list.pkl")
+    similarity_path = os.path.join(root_dir, "similarity.pkl")
+
+    movies = pickle.load(open(movies_path, "rb"))
+    similarity = pickle.load(open(similarity_path, "rb"))
+
     return movies, similarity
 
-movies, similarity = load_models()
+movies, similarity = load_data()
 
 # ------------------------------------------------------
 # POSTER FETCH (SAFE)
