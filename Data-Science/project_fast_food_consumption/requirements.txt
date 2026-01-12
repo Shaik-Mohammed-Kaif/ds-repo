@@ -1,8 +1,9 @@
 streamlit
 pandas
 numpy
-matplotlib
-seaborn
 plotly
+seaborn
+matplotlib
 scikit-learn
 scipy
+reportlab
