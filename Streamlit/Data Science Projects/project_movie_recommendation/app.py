@@ -49,12 +49,10 @@ TMDB_LINK = "https://www.themoviedb.org/movie/"
 # LOAD PICKLE FILES (ONLY TWO)
 # ------------------------------------------------------
 @st.cache_data
-def load_data():
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    movies = pickle.load(open(os.path.join(BASE_DIR, "movie_list.pkl"), "rb"))
-    similarity = pickle.load(open(os.path.join(BASE_DIR, "similarity.pkl"), "rb"))
+def load_models():
+    movies = pickle.load(open("movie_list.pkl", "rb"))
+    similarity = pickle.load(open("similarity.pkl", "rb"))
     return movies, similarity
-
 
 movies, similarity = load_models()
 
