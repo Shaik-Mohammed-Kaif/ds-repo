@@ -1,67 +1,139 @@
 # ==========================================================
 # HealthSense AI Pro
-# End-to-End Health Analytics & Prediction Platform
-# Pure Python | Streamlit | ML | Statistics | PDF
+# Professional Health Analytics Web App
+# Streamlit | ML | Stats | Visualization | PDF
 # ==========================================================
 
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
-import plotly.express as px
-import kagglehub
-import os
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from scipy import stats
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from datetime import datetime
 
-# ---------------- PAGE CONFIG ----------------
+# ----------------------------------------------------------
+# PAGE CONFIG
+# ----------------------------------------------------------
 st.set_page_config(
     page_title="HealthSense AI Pro",
     page_icon="🩺",
     layout="wide"
 )
 
-# ---------------- CUSTOM CSS ----------------
+# ----------------------------------------------------------
+# PREMIUM DARK UI
+# ----------------------------------------------------------
 st.markdown("""
 <style>
-body {background-color:#0e1117;}
+/* ---------- THEME VARIABLES ---------- */
+:root {
+    --bg-main: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    --card-bg: #161b22;
+    --text-main: white;
+}
+
+/* ---------- BODY ---------- */
+body {
+    background: var(--bg-main);
+}
+
+/* ---------- CARD ---------- */
 .card {
-    background-color:#1c1f26;
-    padding:18px;
-    border-radius:14px;
+    background: var(--card-bg);
+    padding:20px;
+    border-radius:16px;
     text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 .card-title {color:#9aa4b2;font-size:14px;}
-.card-value {color:white;font-size:28px;font-weight:bold;}
+.card-value {color:var(--text-main);font-size:30px;font-weight:bold;}
+
+/* ---------- ANIMATED PROGRESS ---------- */
+.progress-wrap {
+    background:#0d1117;
+    border-radius:10px;
+    overflow:hidden;
+    height:14px;
+    margin-top:8px;
+}
+.progress-bar {
+    height:14px;
+    width:0%;
+    background: linear-gradient(90deg, #00f2ff, #00ff88);
+    animation: loadbar 1.6s ease-out forwards;
+}
+@keyframes loadbar {
+    from { width: 0%; }
+    to { width: var(--value); }
+}
+
+/* ---------- BUBBLES ---------- */
+.bubble {
+    position: fixed;
+    width: 160px;
+    height: 160px;
+    background: rgba(0,255,255,0.08);
+    border-radius: 50%;
+    animation: float 20s infinite ease-in-out;
+    z-index:-1;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-80px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ---------- SIDEBAR ---------- */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0b1220, #111827);
+}
+
+/* ---------- HOVER EFFECTS ---------- */
+div[data-testid="stPlotlyChart"] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+div[data-testid="stPlotlyChart"]:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(0,255,255,0.3);
+}
 </style>
+
+<div class="bubble" style="top:10%; left:5%;"></div>
+<div class="bubble" style="top:65%; left:85%;"></div>
+<div class="bubble" style="top:40%; left:45%;"></div>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ----------------
-st.markdown("## 🩺 HealthSense AI Pro")
+# ----------------------------------------------------------
+# TITLE
+# ----------------------------------------------------------
+st.markdown("## 🩺 **HealthSense AI Pro**")
 st.markdown("### Fast Food & Lifestyle Health Risk Analytics Platform")
 
-# ---------------- LOAD DATA ----------------
+# ----------------------------------------------------------
+# LOAD STATIC DATASET (SAFE)
+# ----------------------------------------------------------
 @st.cache_data
 def load_data():
-    path = kagglehub.dataset_download(
-        "prince7489/fast-food-consumption-and-health-impact-dataset"
+    base_dir = Path(__file__).parent
+    return pd.read_csv(
+        base_dir / "fast_food_consumption_health_impact_dataset.csv"
     )
-    csv_path = os.path.join(
-        path, "fast_food_consumption_health_impact_dataset.csv"
-    )
-    return pd.read_csv(csv_path)
 
 df = load_data()
 
-# ---------------- TARGET CREATION ----------------
+# ----------------------------------------------------------
+# TARGET CREATION
+# ----------------------------------------------------------
 def health_risk(score):
     if score <= 3:
         return "High"
@@ -72,29 +144,35 @@ def health_risk(score):
 
 df["Health_Risk"] = df["Overall_Health_Score"].apply(health_risk)
 
-# ---------------- FEATURES ----------------
+# ----------------------------------------------------------
+# FEATURES
+# ----------------------------------------------------------
 features = [
-    'Age',
-    'Fast_Food_Meals_Per_Week',
-    'Average_Daily_Calories',
-    'BMI',
-    'Physical_Activity_Hours_Per_Week',
-    'Sleep_Hours_Per_Day',
-    'Energy_Level_Score',
-    'Doctor_Visits_Per_Year'
+    "Age",
+    "Fast_Food_Meals_Per_Week",
+    "Average_Daily_Calories",
+    "BMI",
+    "Physical_Activity_Hours_Per_Week",
+    "Sleep_Hours_Per_Day",
+    "Energy_Level_Score",
+    "Doctor_Visits_Per_Year"
 ]
 
 X = df[features]
 y = df["Health_Risk"]
 
-# ---------------- ENCODING & SCALING ----------------
+# ----------------------------------------------------------
+# ENCODING & SCALING
+# ----------------------------------------------------------
 le = LabelEncoder()
 y_enc = le.fit_transform(y)
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# ---------------- TRAIN / TEST ----------------
+# ----------------------------------------------------------
+# TRAIN / TEST SPLIT
+# ----------------------------------------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y_enc,
     test_size=0.2,
@@ -102,230 +180,279 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y_enc
 )
 
-# ---------------- ML MODELS ----------------
-ml_model = GradientBoostingClassifier(
-    n_estimators=250,
+# ----------------------------------------------------------
+# ML MODELS
+# ----------------------------------------------------------
+gbm = GradientBoostingClassifier(
+    n_estimators=300,
     learning_rate=0.05,
-    max_depth=3,
     random_state=42
 )
-ml_model.fit(X_train, y_train)
+gbm.fit(X_train, y_train)
 
-prob_model = LogisticRegression(max_iter=1000)
-prob_model.fit(X_train, y_train)
+logit = LogisticRegression(max_iter=1000)
+logit.fit(X_train, y_train)
 
-accuracy = accuracy_score(y_test, ml_model.predict(X_test))
+accuracy = accuracy_score(y_test, gbm.predict(X_test))
 
-# ---------------- METRIC CARDS ----------------
+# ----------------------------------------------------------
+# METRIC CARDS
+# ----------------------------------------------------------
 c1, c2, c3, c4 = st.columns(4)
 
 with c1:
-    st.markdown(f"""
-    <div class="card">
-        <div class="card-title">Dataset Size</div>
-        <div class="card-value">{df.shape[0]}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown(f"<div class='card'><div class='card-title'>Records</div><div class='card-value'>{df.shape[0]}</div></div>", unsafe_allow_html=True)
 with c2:
-    st.markdown(f"""
-    <div class="card">
-        <div class="card-title">Features</div>
-        <div class="card-value">{len(features)}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown(f"<div class='card'><div class='card-title'>Features</div><div class='card-value'>{len(features)}</div></div>", unsafe_allow_html=True)
 with c3:
-    st.markdown(f"""
-    <div class="card">
-        <div class="card-title">ML Model</div>
-        <div class="card-value">GBM</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown("<div class='card'><div class='card-title'>ML Model</div><div class='card-value'>GBM</div></div>", unsafe_allow_html=True)
 with c4:
-    st.markdown(f"""
-    <div class="card">
-        <div class="card-title">Accuracy</div>
-        <div class="card-value">{accuracy*100:.1f}%</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"<div class='card'><div class='card-title'>Accuracy</div><div class='card-value'>{accuracy*100:.1f}%</div></div>", unsafe_allow_html=True)
 
-# ---------------- TABS ----------------
+# ----------------------------------------------------------
+# TABS
+# ----------------------------------------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["📊 Overview", "📈 EDA", "🤖 ML Model", "📐 Statistics", "🧪 Prediction"]
+    ["📊 Overview", "📈 Visual Insights", "🤖 ML Model", "📐 Statistics", "🧪 Prediction"]
 )
 
-# ---------------- OVERVIEW ----------------
+# ----------------------------------------------------------
+# OVERVIEW
+# ----------------------------------------------------------
 with tab1:
-    st.subheader("Dataset Preview")
     st.dataframe(df.head())
     st.markdown("""
-    **Goal:**  
-    Predict health risk using lifestyle & dietary habits.
-
-    **Outputs:**  
-    - Risk Category  
-    - Probability (%)  
-    - Statistical justification  
-    - PDF health report
+    **This platform provides:**
+    - Health risk classification
+    - Lifestyle & diet analytics
+    - Machine learning predictions
+    - Statistical validation
+    - Automated PDF health report
     """)
 
-# ---------------- EDA ----------------
+# ----------------------------------------------------------
+# VISUAL INSIGHTS (HEAVY)
+# ----------------------------------------------------------
 with tab2:
-    col1, col2 = st.columns(2)
-
-    with col1:
-        fig = px.scatter(
+    st.plotly_chart(
+        px.scatter(
             df,
             x="Fast_Food_Meals_Per_Week",
             y="BMI",
             color="Health_Risk",
-            title="Fast Food vs BMI"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+            size="Average_Daily_Calories",
+            title="Fast Food vs BMI vs Calories"
+        ),
+        use_container_width=True
+    )
 
-    with col2:
-        fig = px.scatter(
+    st.plotly_chart(
+        px.scatter(
             df,
             x="Sleep_Hours_Per_Day",
             y="Energy_Level_Score",
             trendline="ols",
-            title="Sleep vs Energy"
-        )
-        st.plotly_chart(fig, use_container_width=True)
+            title="Sleep vs Energy Level"
+        ),
+        use_container_width=True
+    )
 
-    st.subheader("Correlation Heatmap")
-    corr = df.select_dtypes(include="number").corr()
-    plt.figure(figsize=(10,5))
-    sns.heatmap(corr, cmap="coolwarm")
-    st.pyplot(plt)
+    st.plotly_chart(
+        px.box(
+            df,
+            x="Health_Risk",
+            y="Doctor_Visits_Per_Year",
+            title="Doctor Visits by Health Risk"
+        ),
+        use_container_width=True
+    )
 
-# ---------------- ML MODEL ----------------
+    corr = df.select_dtypes("number").corr()
+    fig, ax = plt.subplots(figsize=(10,5))
+    sns.heatmap(corr, cmap="coolwarm", ax=ax)
+    st.pyplot(fig)
+
+# ----------------------------------------------------------
+# ML MODEL TAB
+# ----------------------------------------------------------
 with tab3:
-    st.subheader("Machine Learning Model")
-    st.metric("Model Accuracy", f"{accuracy*100:.2f}%")
+    st.metric("GBM Accuracy", f"{accuracy*100:.2f}%")
 
     importance = pd.Series(
-        ml_model.feature_importances_,
+        gbm.feature_importances_,
         index=features
     ).sort_values()
 
     st.subheader("Feature Importance")
     st.bar_chart(importance)
 
-# ---------------- STATISTICS ----------------
+    cm = confusion_matrix(y_test, gbm.predict(X_test))
+    fig, ax = plt.subplots()
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=le.classes_,
+        yticklabels=le.classes_,
+        ax=ax
+    )
+    st.pyplot(fig)
+
+# ----------------------------------------------------------
+# STATISTICS (ENHANCED)
+# ----------------------------------------------------------
 with tab4:
-    st.subheader("Statistical Analysis")
+    st.subheader("📐 Statistical Analysis & Model Insights")
+
+    # -----------------------------
+    # BASIC DESCRIPTIVE STATS
+    # -----------------------------
+    st.markdown("### 📊 Descriptive Statistics")
+    st.dataframe(df[features + ["Overall_Health_Score"]].describe().T)
 
     st.markdown("### Correlation with Overall Health Score")
     corr_health = df[features + ['Overall_Health_Score']].corr()['Overall_Health_Score']
     st.dataframe(corr_health.sort_values(ascending=False))
 
-    st.markdown("### Hypothesis Test: Fast Food Impact")
-    low_ff = df[df['Fast_Food_Meals_Per_Week'] <= 3]['Overall_Health_Score']
-    high_ff = df[df['Fast_Food_Meals_Per_Week'] >= 10]['Overall_Health_Score']
+    # -----------------------------
+    # GROUP STATISTICS
+    # -----------------------------
+    st.markdown("### 📊 Mean Feature Values by Health Risk")
+    group_stats = df.groupby("Health_Risk")[features].mean()
+    st.dataframe(group_stats.round(2))
+
+    fig = px.bar(
+        group_stats.reset_index(),
+        x="Health_Risk",
+        y="BMI",
+        title="Average BMI by Health Risk",
+        color="Health_Risk"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # -----------------------------
+    # MODEL STATISTICS
+    # -----------------------------
+    st.markdown("### 🤖 Model Performance Statistics")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Model Used", "Gradient Boosting")
+
+    with col2:
+        st.metric("Test Accuracy", f"{accuracy*100:.2f}%")
+
+    with col3:
+        st.metric("Total Samples", df.shape[0])
+
+    # Class distribution
+    st.markdown("### 🎯 Class Distribution")
+    class_dist = df["Health_Risk"].value_counts()
+    st.plotly_chart(
+        px.pie(
+            values=class_dist.values,
+            names=class_dist.index,
+            title="Health Risk Distribution"
+        ),
+        use_container_width=True
+    )
+
+    # -----------------------------
+    # HYPOTHESIS TEST
+    # -----------------------------
+    st.markdown("### 🧪 Hypothesis Test: Fast Food Impact")
+
+    low_ff = df[df["Fast_Food_Meals_Per_Week"] <= 3]["Overall_Health_Score"]
+    high_ff = df[df["Fast_Food_Meals_Per_Week"] >= 10]["Overall_Health_Score"]
 
     t_stat, p_val = stats.ttest_ind(low_ff, high_ff)
 
-    st.write(f"T-Statistic: **{t_stat:.2f}**")
-    st.write(f"P-Value: **{p_val:.4f}**")
+    st.write(f"**T-Statistic:** {t_stat:.3f}")
+    st.write(f"**P-Value:** {p_val:.5f}")
 
     if p_val < 0.05:
-        st.success("Statistically significant difference detected")
+        st.success("✅ Statistically significant impact of fast food on health")
     else:
-        st.info("No statistically significant difference detected")
+        st.info("ℹ️ No statistically significant difference detected")
 
-# ---------------- PDF REPORT FUNCTION ----------------
-def generate_pdf(user_data, risk, prob):
-    file_name = "Health_Risk_Report.pdf"
-    c = canvas.Canvas(file_name, pagesize=A4)
-    w, h = A4
-    y = h - 40
+    # -----------------------------
+    # DISTRIBUTION VISUALS
+    # -----------------------------
+    st.markdown("### 📈 Distribution Analysis")
+
+    fig = px.histogram(
+        df,
+        x="Overall_Health_Score",
+        color="Health_Risk",
+        nbins=20,
+        title="Overall Health Score Distribution"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    fig = px.box(
+        df,
+        x="Health_Risk",
+        y="Overall_Health_Score",
+        title="Health Score Distribution by Risk Level"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+# ----------------------------------------------------------
+# PDF REPORT
+# ----------------------------------------------------------
+def generate_pdf(data, risk, prob):
+    c = canvas.Canvas("Health_Report.pdf", pagesize=A4)
+    y = 800
 
     c.setFont("Helvetica-Bold", 16)
     c.drawString(40, y, "HealthSense AI – Health Risk Report")
-    y -= 30
+    y -= 40
 
     c.setFont("Helvetica", 11)
-    for k, v in user_data.items():
+    for k, v in data.items():
         c.drawString(40, y, f"{k}: {v}")
-        y -= 15
+        y -= 18
 
     y -= 20
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(40, y, f"Predicted Risk Level: {risk}")
-    y -= 15
-    c.drawString(40, y, f"Risk Probability: {prob:.1f}%")
-
-    y -= 30
-    c.setFont("Helvetica", 10)
-    c.drawString(
-        40, y,
-        "Disclaimer: This report is AI-generated for educational purposes only."
-    )
-
-    c.drawString(40, y-20, f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    c.drawString(40, y, f"Predicted Risk: {risk}")
+    c.drawString(40, y-18, f"Probability: {prob:.1f}%")
+    c.drawString(40, y-60, f"Generated: {datetime.now()}")
 
     c.save()
-    return file_name
 
-# ---------------- PREDICTION ----------------
+# ----------------------------------------------------------
+# PREDICTION
+# ----------------------------------------------------------
 with tab5:
-    st.subheader("Predict Health Risk")
+    age = st.slider("Age", 18, 60, 30)
+    ff = st.slider("Fast Food / Week", 0, 14, 5)
+    cal = st.slider("Daily Calories", 1600, 3500, 2500)
+    bmi = st.slider("BMI", 18.0, 35.0, 25.0)
+    act = st.slider("Activity Hours / Week", 0.0, 10.0, 4.0)
+    slp = st.slider("Sleep Hours / Day", 4.0, 9.0, 6.5)
+    eng = st.slider("Energy Level", 1, 9, 5)
+    doc = st.slider("Doctor Visits / Year", 0, 12, 5)
 
-    col1, col2 = st.columns(2)
+    if st.button("🔍 Predict Health Risk"):
+        sample = scaler.transform([[age, ff, cal, bmi, act, slp, eng, doc]])
+        pred = gbm.predict(sample)
+        prob = gbm.predict_proba(sample).max() * 100
+        label = le.inverse_transform(pred)[0]
 
-    with col1:
-        age = st.slider("Age", 18, 60, 30)
-        fast_food = st.slider("Fast Food Meals / Week", 0, 14, 5)
-        calories = st.slider("Daily Calories", 1600, 3500, 2500)
-        bmi = st.slider("BMI", 18.0, 35.0, 25.0)
+        st.success(f"**{label} Risk** ({prob:.1f}%)")
 
-    with col2:
-        activity = st.slider("Physical Activity (hrs/week)", 0.0, 10.0, 4.0)
-        sleep = st.slider("Sleep Hours / Day", 4.0, 9.0, 6.5)
-        energy = st.slider("Energy Level (1–9)", 1, 9, 5)
-        doctor = st.slider("Doctor Visits / Year", 0, 12, 5)
+        generate_pdf(
+            {"Age": age, "Fast Food": ff, "BMI": bmi, "Sleep": slp},
+            label, prob
+        )
 
-    if st.button("🔍 Predict"):
-        sample = [[
-            age, fast_food, calories, bmi,
-            activity, sleep, energy, doctor
-        ]]
+        with open("Health_Report.pdf", "rb") as f:
+            st.download_button("📄 Download PDF Report", f)
 
-        sample_scaled = scaler.transform(sample)
-        pred = ml_model.predict(sample_scaled)
-        proba = prob_model.predict_proba(sample_scaled)[0]
-
-        risk_label = le.inverse_transform(pred)[0]
-        risk_percent = np.max(proba) * 100
-
-        if risk_label == "High":
-            st.error(f"⚠️ High Health Risk ({risk_percent:.1f}%)")
-        elif risk_label == "Medium":
-            st.warning(f"⚠️ Medium Health Risk ({risk_percent:.1f}%)")
-        else:
-            st.success(f"✅ Low Health Risk ({risk_percent:.1f}%)")
-
-        user_info = {
-            "Age": age,
-            "Fast Food Meals / Week": fast_food,
-            "BMI": bmi,
-            "Physical Activity": activity,
-            "Sleep Hours": sleep
-        }
-
-        pdf_file = generate_pdf(user_info, risk_label, risk_percent)
-
-        with open(pdf_file, "rb") as f:
-            st.download_button(
-                "📄 Download PDF Health Report",
-                f,
-                file_name="Health_Risk_Report.pdf",
-                mime="application/pdf"
-            )
-
-# ---------------- FOOTER ----------------
-st.markdown("---")
-st.caption("HealthSense AI Pro | Streamlit • ML • Statistics • PDF | Pure Python")
+# ----------------------------------------------------------
+# FOOTER
+# ----------------------------------------------------------
+st.caption("HealthSense AI Pro | Streamlit • Machine Learning • Statistics • Visualization")
