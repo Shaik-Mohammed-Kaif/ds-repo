@@ -62,14 +62,21 @@ TMDB_LINK = "https://www.themoviedb.org/movie/"
 # ------------------------------------------------------
 # LOAD DATA (PKL FILES)
 # ------------------------------------------------------
-@st.cache_data(show_spinner=True)
+@st.cache_data
 def load_data():
     base_dir = Path(__file__).parent
 
-    with open(base_dir / "movie_list.pkl", "rb") as f:
+    movies_path = base_dir / "movie_list.pkl"
+    similarity_path = base_dir / "similarity.pkl"
+
+    if not movies_path.exists() or not similarity_path.exists():
+        st.error("PKL files not found in app directory")
+        st.stop()
+
+    with open(movies_path, "rb") as f:
         movies = pickle.load(f)
 
-    with open(base_dir / "similarity.pkl", "rb") as f:
+    with open(similarity_path, "rb") as f:
         similarity = pickle.load(f)
 
     return movies, similarity
