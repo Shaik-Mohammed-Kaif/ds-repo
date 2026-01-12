@@ -1,93 +1,162 @@
 import pickle
 import streamlit as st
+import numpy as np
 import requests
 
-# -------------------------------
-# CONFIG
-# -------------------------------
+# ------------------------------------------------------
+# PAGE CONFIG
+# ------------------------------------------------------
 st.set_page_config(
-    page_title="Movie Recommender",
+    page_title="Netflix AI Recommender",
     page_icon="🎬",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# -------------------------------
-# TMDB POSTER FETCH
-# -------------------------------
-API_KEY = "8265bd1679663a7ea12ac168da84d2e8"
+# ------------------------------------------------------
+# CUSTOM CSS (NETFLIX STYLE)
+# ------------------------------------------------------
+st.markdown("""
+<style>
+body {
+    background-color: #0f0f0f;
+}
+.movie-title {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+.netflix-btn {
+    background-color: #e50914;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-align: center;
+    display: inline-block;
+    margin-top: 6px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-def fetch_poster(movie_id):
-    try:
-        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-        response = requests.get(url, timeout=5).json()
-        poster_path = response.get("poster_path")
+# ------------------------------------------------------
+# CONSTANTS
+# ------------------------------------------------------
+TMDB_API_KEY = "8265bd1679663a7ea12ac168da84d2e8"
+POSTER_BASE = "https://image.tmdb.org/t/p/w500/"
+TMDB_LINK = "https://www.themoviedb.org/movie/"
 
-        if poster_path:
-            return "https://image.tmdb.org/t/p/w500/" + poster_path
-        else:
-            return "https://via.placeholder.com/500x750?text=No+Image"
-    except:
-        return "https://via.placeholder.com/500x750?text=Error"
-
-# -------------------------------
-# RECOMMENDATION FUNCTION
-# -------------------------------
-def recommend(movie_title):
-    try:
-        index = movies[movies["title"] == movie_title].index[0]
-    except IndexError:
-        return [], []
-
-    distances = sorted(
-        list(enumerate(similarity[index])),
-        reverse=True,
-        key=lambda x: x[1]
-    )
-
-    recommended_names = []
-    recommended_posters = []
-
-    for i in distances[1:6]:
-        movie_id = movies.iloc[i[0]].movie_id
-        recommended_names.append(movies.iloc[i[0]].title)
-        recommended_posters.append(fetch_poster(movie_id))
-
-    return recommended_names, recommended_posters
-
-# -------------------------------
-# LOAD DATA
-# -------------------------------
+# ------------------------------------------------------
+# LOAD PICKLE FILES (ONLY TWO)
+# ------------------------------------------------------
 @st.cache_data
 def load_data():
-    movies = pickle.load(open("movie_list.pkl", "rb"))
-    similarity = pickle.load(open("similarity.pkl", "rb"))
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # go 2 levels up -> ds-repo/
+    root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
+
+    movies_path = os.path.join(root_dir, "movie_list.pkl")
+    similarity_path = os.path.join(root_dir, "similarity.pkl")
+
+    movies = pickle.load(open(movies_path, "rb"))
+    similarity = pickle.load(open(similarity_path, "rb"))
+
     return movies, similarity
 
 movies, similarity = load_data()
 
-# -------------------------------
-# UI
-# -------------------------------
-st.title("🎬 Movie Recommender System")
-st.markdown("Get **movie recommendations** based on similarity using **Machine Learning**.")
+# ------------------------------------------------------
+# POSTER FETCH (SAFE)
+# ------------------------------------------------------
+def fetch_poster(movie_id):
+    try:
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}"
+        data = requests.get(url, timeout=5).json()
+        if data.get("poster_path"):
+            return POSTER_BASE + data["poster_path"]
+    except:
+        pass
+    return "https://via.placeholder.com/500x750?text=No+Poster"
 
-movie_list = movies["title"].values
-selected_movie = st.selectbox(
-    "🎥 Select a movie",
-    movie_list
+# ------------------------------------------------------
+# CORE RECOMMENDER (NETFLIX STYLE)
+# ------------------------------------------------------
+def recommend(movie_title, top_n=5):
+    index = movies[movies["title"] == movie_title].index[0]
+
+    scores = list(enumerate(similarity[index]))
+    scores = sorted(scores, key=lambda x: x[1], reverse=True)[1:top_n+1]
+
+    results = []
+    for i, score in scores:
+        row = movies.iloc[i]
+        results.append({
+            "title": row.title,
+            "movie_id": row.movie_id,
+            "poster": fetch_poster(row.movie_id),
+            "match": int(score * 100)
+        })
+
+    return results
+
+# ------------------------------------------------------
+# SIDEBAR (NETFLIX FEEL)
+# ------------------------------------------------------
+st.sidebar.markdown("## 🎥 Netflix AI Recommender")
+st.sidebar.markdown("Content-based ML engine")
+st.sidebar.markdown("---")
+
+search = st.sidebar.text_input("🔍 Search Movie")
+
+filtered_titles = movies["title"]
+if search:
+    filtered_titles = movies[movies["title"].str.contains(search, case=False)]["title"]
+
+selected_movie = st.sidebar.selectbox(
+    "Select a movie",
+    filtered_titles
 )
 
-# -------------------------------
-# BUTTON ACTION
-# -------------------------------
-if st.button("🚀 Show Recommendation"):
-    names, posters = recommend(selected_movie)
+# ------------------------------------------------------
+# MAIN HEADER
+# ------------------------------------------------------
+st.markdown("""
+<h1 style='color:#E50914;text-align:center;'>🎬 Netflix-Style Movie Recommender</h1>
+<p style='text-align:center;font-size:18px;'>Powered by Machine Learning & NLP</p>
+""", unsafe_allow_html=True)
 
-    if len(names) == 0:
-        st.error("Movie not found!")
-    else:
-        cols = st.columns(5)
-        for i in range(5):
-            with cols[i]:
-                st.text(names[i])
-                st.image(posters[i])
+# ------------------------------------------------------
+# RECOMMEND BUTTON
+# ------------------------------------------------------
+if st.button("🍿 Recommend Movies"):
+    recommendations = recommend(selected_movie)
+
+    st.subheader("✨ Because you watched:")
+    st.markdown(f"### 🎥 **{selected_movie}**")
+
+    cols = st.columns(5)
+
+    for idx, rec in enumerate(recommendations):
+        with cols[idx]:
+            st.image(rec["poster"], width=220)
+            st.markdown(
+                f"""
+                <div class="movie-title">{rec['title']}</div>
+                <progress value="{rec['match']}" max="100"></progress>
+                <div style="text-align:center;">{rec['match']}% Match</div>
+                <a href="{TMDB_LINK}{rec['movie_id']}" target="_blank" class="netflix-btn">
+                    View on TMDB
+                </a>
+                """,
+                unsafe_allow_html=True
+            )
+
+# ------------------------------------------------------
+# FOOTER
+# ------------------------------------------------------
+st.markdown("""
+<hr>
+<p style='text-align:center;color:gray;'>
+Netflix-style recommender | Built with Streamlit & Machine Learning
+</p>
+""", unsafe_allow_html=True)
