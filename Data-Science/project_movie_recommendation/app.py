@@ -1,9 +1,6 @@
 import pickle
 import streamlit as st
-import numpy as np
 import requests
-import os
-
 # ------------------------------------------------------
 # PAGE CONFIG
 # ------------------------------------------------------
@@ -53,11 +50,8 @@ TMDB_LINK = "https://www.themoviedb.org/movie/"
 def load_data():
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # go 2 levels up -> ds-repo/
-    root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
-
-    movies_path = os.path.join(root_dir, "movie_list.pkl")
-    similarity_path = os.path.join(root_dir, "similarity.pkl")
+    movies_path = os.path.join(base_dir, "movie_list.pkl")
+    similarity_path = os.path.join(base_dir, "similarity.pkl")
 
     movies = pickle.load(open(movies_path, "rb"))
     similarity = pickle.load(open(similarity_path, "rb"))
