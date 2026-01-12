@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LIMRA Hotel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            200: '#fef08a',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                            800: '#854d0e',
+                            900: '#713f12'
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins bg-gray-100">
+    <!-- Dashboard Header -->
+    <header class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebar-toggle" class="text-gray-500 hover:text-gray-700 lg:hidden">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
+                            <i data-feather="home" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <span class="font-playfair font-bold text-xl text-gray-800">LIMRA Hotel</span>
+                        <span class="text-gray-500">- Admin Dashboard</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i data-feather="bell" class="w-5 h-5"></i>
+                    </button>
+                    <a href="index.html" class="text-gray-500 hover:text-primary-600 font-medium">
+                        <i data-feather="external-link" class="w-4 h-4 inline mr-1"></i>
+                        View Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-white w-64 min-h-screen shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 fixed lg:static z-30">
+            <nav class="mt-8">
+                <div class="px-4 space-y-2">
+                    <a href="#dashboard" class="nav-item flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors active">
+                        <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="#bookings" class="nav-item flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
+                        <i data-feather="calendar" class="w-5 h-5 mr-3"></i>
+                        Bookings
+                    </a>
+                    <a href="#rooms" class="nav-item flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
+                        <i data-feather="home" class="w-5 h-5 mr-3"></i>
+                        Rooms
+                    </a>
+                    <a href="#guests" class="nav-item flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-lg transition-colors">
+                        <i data-feather="users" class="w-5 h-5 mr-3"></i>
+                        Guests
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-8">
+            <!-- Dashboard Overview -->
+            <div id="dashboard-section" class="section active">
+                <div class="mb-8">
+                    <h1 class="font-playfair font-bold text-3xl text-gray-800 mb-2">Dashboard Overview</h1>
+                    <p class="text-gray-600">Welcome to LIMRA Hotel Management System</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Total Bookings</p>
+                                <p id="total-bookings" class="text-2xl font-bold text-gray-900">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i data-feather="calendar" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Rooms Available</p>
+                                <p id="rooms-available" class="text-2xl font-bold text-gray-900">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-feather="home" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Revenue Today</p>
+                                <p id="revenue-today" class="text-2xl font-bold text-gray-900">$-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+                                <i data-feather="dollar-sign" class="w-6 h-6 text-primary-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600 uppercase tracking-wide">Occupancy Rate</p>
+                                <p class="text-2xl font-bold text-gray-900">85%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i data-feather="trending-up" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="font-semibold text-xl text-gray-800 mb-6">Recent Bookings</h2>
+                    <div id="recent-bookings" class="space-y-4">
+                        <!-- Recent bookings will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Section -->
+            <div id="bookings-section" class="section hidden">
+                <div class="mb-8">
+                    <h1 class="font-playfair font-bold text-3xl text-gray-800 mb-2">All Bookings</h1>
+                    <p class="text-gray-600">Manage all hotel reservations</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <h2 class="font-semibold text-xl text-gray-800">Booking Management</h2>
+                            <button id="refresh-bookings" class="mt-4 sm:mt-0 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i data-feather="refresh-cw" class="w-4 h-4 inline mr-2"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guest</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room(s)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dates</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookings-table" class="bg-white divide-y divide-gray-200">
+                                <!-- Bookings will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other sections placeholder -->
+            <div id="rooms-section" class="section hidden">
+                <div class="mb-8">
+                    <h1 class="font-playfair font-bold text-3xl text-gray-800 mb-2">Room Management</h1>
+                    <p class="text-gray-600">Manage room availability and settings</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <p class="text-gray-600">Room management features coming soon...</p>
+                </div>
+            </div>
+
+            <div id="guests-section" class="section hidden">
+                <div class="mb-8">
+                    <h1 class="font-playfair font-bold text-3xl text-gray-800 mb-2">Guest Management</h1>
+                    <p class="text-gray-600">Manage guest information and history</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <p class="text-gray-600">Guest management features coming soon...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2">
+        <!-- Toasts will be dynamically added here -->
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

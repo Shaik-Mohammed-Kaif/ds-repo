@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Deluxe Suite",
+    "description": "Spacious suite with city view, king bed, and luxury amenities",
+    "price": 299,
+    "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "amenities": [
+      "Free WiFi",
+      "Room Service",
+      "Air Conditioning",
+      "Minibar"
+    ],
+    "available": true
+  },
+  {
+    "id": 2,
+    "name": "Ocean View Room",
+    "description": "Beautiful ocean view with queen bed and private balcony",
+    "price": 199,
+    "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "amenities": [
+      "Free WiFi",
+      "Ocean View",
+      "Balcony",
+      "Coffee Maker"
+    ],
+    "available": true
+  },
+  {
+    "id": 3,
+    "name": "Standard Room",
+    "description": "Comfortable room with modern amenities and cozy atmosphere",
+    "price": 149,
+    "image": "https://images.pexels.com/photos/271619/pexels-photo-271619.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "amenities": [
+      "Free WiFi",
+      "Air Conditioning",
+      "TV",
+      "Private Bathroom"
+    ],
+    "available": true
+  },
+  {
+    "id": 4,
+    "name": "Presidential Suite",
+    "description": "Ultimate luxury with panoramic views, separate living area",
+    "price": 599,
+    "image": "https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "amenities": [
+      "Free WiFi",
+      "Butler Service",
+      "Jacuzzi",
+      "Dining Area"
+    ],
+    "available": true
+  }
+]

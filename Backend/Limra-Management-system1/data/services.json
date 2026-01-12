@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Room Service",
+    "description": "24/7 in-room dining service",
+    "price": 25,
+    "category": "food"
+  },
+  {
+    "id": 2,
+    "name": "Spa Treatment",
+    "description": "Relaxing full-body massage",
+    "price": 120,
+    "category": "spa"
+  },
+  {
+    "id": 3,
+    "name": "Laundry Service",
+    "description": "Professional laundry and dry cleaning",
+    "price": 30,
+    "category": "laundry"
+  }
+]

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIMRA Hotel - Experience Luxury and Comfort</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            200: '#fef08a',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                            800: '#854d0e',
+                            900: '#713f12'
+                        }
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-poppins">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-sm shadow-lg" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
+                        <i data-feather="home" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <span class="font-playfair font-bold text-xl text-gray-800">LIMRA Hotel</span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Home</a>
+                    <a href="#rooms" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Rooms</a>
+                    <a href="#services" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Services</a>
+                    <a href="#reviews" class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors">Reviews</a>
+                    <a href="dashboard.html" class="text-gray-700 hover:text-primary-600 font-medium transition-colors">Dashboard</a>
+                    <button id="booking-toggle" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-all transform hover:scale-105">
+                        <i data-feather="shopping-bag" class="w-4 h-4 inline mr-2"></i>
+                        Booking (<span id="cart-count">0</span>)
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary-600 transition-colors">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary-600 font-medium">Home</a>
+                    <a href="#rooms" class="block px-3 py-2 text-gray-700 hover:text-primary-600 font-medium">Rooms</a>
+                    <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-primary-600 font-medium">Services</a>
+                    <a href="#reviews" class="block px-3 py-2 text-gray-700 hover:text-primary-600 font-medium">Reviews</a>
+                    <a href="dashboard.html" class="block px-3 py-2 text-gray-700 hover:text-primary-600 font-medium">Dashboard</a>
+                    <button id="mobile-booking-toggle" class="w-full text-left px-3 py-2 text-primary-600 font-medium">
+                        Booking (<span class="cart-count">0</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                 alt="LIMRA Hotel" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
+        </div>
+
+        <div class="relative z-10 text-center text-white max-w-4xl mx-auto px-4" data-aos="fade-up">
+            <h1 class="font-playfair font-bold text-4xl md:text-6xl lg:text-7xl mb-6 leading-tight">
+                Welcome to <span class="text-primary-400">LIMRA Hotel</span>
+            </h1>
+            <p class="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
+                Experience Luxury and Comfort at its Best
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="scrollToSection('rooms')" class="hero-btn bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105 hover:shadow-xl">
+                    <i data-feather="eye" class="w-5 h-5 inline mr-2"></i>
+                    View Rooms
+                </button>
+                <button onclick="scrollToSection('rooms')" class="hero-btn border-2 border-white hover:bg-white hover:text-gray-800 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all transform hover:scale-105">
+                    <i data-feather="calendar" class="w-5 h-5 inline mr-2"></i>
+                    Book Now
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i data-feather="chevron-down" class="w-8 h-8 text-white"></i>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section id="rooms" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="font-playfair font-bold text-4xl md:text-5xl text-gray-800 mb-4">
+                    Our Luxury Rooms
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Discover our carefully curated collection of rooms designed for ultimate comfort and luxury
+                </p>
+            </div>
+
+            <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Rooms will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="font-playfair font-bold text-4xl md:text-5xl text-gray-800 mb-4">
+                    Premium Services
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Enhance your stay with our exceptional services and amenities
+                </p>
+            </div>
+
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Services will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="font-playfair font-bold text-4xl md:text-5xl text-gray-800 mb-4">
+                    Guest Reviews
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    See what our valued guests have to say about their experience
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="review-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150"
+                             alt="Sarah Johnson" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Sarah Johnson</h4>
+                            <div class="flex text-primary-500">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Absolutely stunning hotel with exceptional service. The rooms were immaculate and the staff went above and beyond to make our stay memorable."</p>
+                </div>
+
+                <div class="review-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150"
+                             alt="Michael Chen" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Michael Chen</h4>
+                            <div class="flex text-primary-500">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Perfect location with breathtaking views. The Presidential Suite exceeded all expectations. Will definitely be returning!"</p>
+                </div>
+
+                <div class="review-card bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=150"
+                             alt="Emma Davis" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Emma Davis</h4>
+                            <div class="flex text-primary-500">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Outstanding hospitality and luxury amenities. The spa services were incredible and the food was exquisite. Highly recommended!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Logo & Description -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
+                            <i data-feather="home" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <span class="font-playfair font-bold text-xl">LIMRA Hotel</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Experience luxury and comfort at its finest. Your perfect stay awaits.</p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/mohammed_kaif_477/" class="text-gray-400 hover:text-primary-400 transition-colors">
+                            <i data-feather="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://github.com/Shaik-Mohammed-Kaif" class="text-gray-400 hover:text-primary-400 transition-colors">
+                            <i data-feather="github" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/s-mohammed-kaif-2a500a341/" class="text-gray-400 hover:text-primary-400 transition-colors">
+                            <i data-feather="linkedin" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+<div>
+    <h3 class="font-semibold text-lg mb-4">Contact Us</h3>
+    <div class="space-y-2 text-gray-400">
+        <div class="flex items-center">
+            <i data-feather="map-pin" class="w-4 h-4 mr-2"></i>
+            <a href="https://www.google.com/maps/search/?api=1&query=Virmala+Agency+Adoni+Andhra+Pradesh+India" target="_blank" class="hover:text-primary-400">
+                Virmala Agency, Adoni, Andhra Pradesh, India
+            </a>
+        </div>
+        <div class="flex items-center">
+            <i data-feather="phone" class="w-4 h-4 mr-2"></i>
+            <a href="tel:+916300472873" class="hover:text-primary-400">+91 6300472873</a>
+        </div>
+        <div class="flex items-center">
+            <i data-feather="mail" class="w-4 h-4 mr-2"></i>
+            <a href="mailto:mohammedkaif8297@gmail.com" class="hover:text-primary-400">mohammedkaif8297@gmail.com</a>
+        </div>
+        <div class="flex items-center">
+            <i data-feather="clock" class="w-4 h-4 mr-2"></i>
+            <span>Check-in: 2 PM | Check-out: 12 PM | Reception: 24/7</span>
+        </div>
+        <div class="flex items-center mt-2">
+            <i data-feather="message-circle" class="w-4 h-4 mr-2"></i>
+            <a href="https://wa.me/916300472873" target="_blank" class="hover:text-primary-400">Chat on WhatsApp</a>
+        </div>
+    </div>
+    <!-- Inline Map -->
+    <div class="mt-4 rounded-lg overflow-hidden">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.123456789!2d77.276543!3d15.621234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb65c123456789:0xabcdef1234567890!2sVirmala%20Agency!5e0!3m2!1sen!2sin!4v1695678901234"
+            width="100%"
+            height="200"
+            class="border-0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+</div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
+                    <div class="space-y-2">
+                        <a href="#home" class="block text-gray-400 hover:text-primary-400 transition-colors">Home</a>
+                        <a href="#rooms" class="block text-gray-400 hover:text-primary-400 transition-colors">Rooms</a>
+                        <a href="#services" class="block text-gray-400 hover:text-primary-400 transition-colors">Services</a>
+                        <a href="#reviews" class="block text-gray-400 hover:text-primary-400 transition-colors">Reviews</a>
+                    </div>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Newsletter</h3>
+                    <p class="text-gray-400 mb-4">Subscribe for special offers and updates</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 bg-gray-800 text-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <button class="bg-primary-500 hover:bg-primary-600 px-4 py-2 rounded-r-lg transition-colors">
+                            <i data-feather="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 LIMRA Hotel. All rights reserved. | Designed with luxury in mind.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Booking Sidebar -->
+    <div id="booking-sidebar" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+        <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+                <h3 class="font-playfair font-bold text-2xl text-gray-800">Your Booking</h3>
+                <button id="close-sidebar" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="booking-content" class="p-6">
+            <div id="empty-cart" class="text-center py-12">
+                <i data-feather="shopping-bag" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <p class="text-gray-500 text-lg">Your booking is empty</p>
+                <p class="text-gray-400">Add rooms to get started</p>
+            </div>
+
+            <div id="booking-items" class="space-y-4 mb-6 hidden">
+                <!-- Booking items will be dynamically added -->
+            </div>
+
+            <div id="booking-form" class="hidden">
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Check-in Date</label>
+                        <input type="date" id="checkin-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Check-out Date</label>
+                        <input type="date" id="checkout-date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Number of Guests</label>
+                        <select id="guest-count" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                            <option value="1">1 Guest</option>
+                            <option value="2">2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5+ Guests</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Information</label>
+                        <input type="email" id="guest-email" placeholder="Your email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 mb-2">
+                        <input type="tel" id="guest-phone" placeholder="Your phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    </div>
+                </div>
+
+                <div class="border-t pt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-semibold text-lg">Total Amount:</span>
+                        <span id="total-amount" class="font-bold text-2xl text-primary-600">$0</span>
+                    </div>
+                    <button id="confirm-booking" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-105">
+                        Confirm Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 transform scale-95 transition-transform" id="modal-content">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-feather="check" class="w-8 h-8 text-green-600"></i>
+                </div>
+                <h3 class="font-playfair font-bold text-2xl text-gray-800 mb-2">Booking Confirmed!</h3>
+                <p class="text-gray-600 mb-6">Thank you for choosing LIMRA Hotel. Your reservation has been confirmed and a confirmation email has been sent.</p>
+                <div id="booking-details" class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <!-- Booking details will be populated here -->
+                </div>
+                <button id="close-modal" class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-lg font-semibold transition-all">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2">
+        <!-- Toasts will be dynamically added here -->
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

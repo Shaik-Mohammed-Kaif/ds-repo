@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cakery{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'home' %}">Cakery Bakery</a></h1>
+    </header>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>
+        <p>&copy; 2025 Cakery Bakery. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
